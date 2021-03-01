@@ -1,0 +1,95 @@
+[PUI_Info] Create window PAL_GUI Test
+[PUI_Info] Create Layer 10001
+[PUI_Info] Create Layer 10002
+[PUI_Info] PAL_GUI_Init: OK
+[PUI_Info] Create Button 10003
+[PUI_Info] Window 1 shown
+[PUI_Info] Window 1 gained keyboard focus
+[PUI_Info] Window 1 exposed
+[PUI_Info] Mouse entered window 1
+[PUI_Info] Mouse left window PAL_GUI Test
+[PUI_Info] Mouse entered window 1
+[PUI_Info] Mouse left window PAL_GUI Test
+[PUI_Info] Window 1 lost keyboard focus
+[PUI_Info] Window 1 gained keyboard focus
+[PUI_Info] Window 1 exposed
+[PUI_Info] Mouse entered window 1
+[PUI_Info] Window 1 lost keyboard focus
+[PUI_Info] Mouse left window PAL_GUI Test
+[PUI_Info] Window 1 gained keyboard focus
+[PUI_Info] Mouse entered window 1
+[PUI_Info] Window 1 exposed
+[PUI_Info] Mouse left window PAL_GUI Test
+[PUI_Info] Mouse entered window 1
+[PUI_Info] Window 1 lost keyboard focus
+[PUI_Info] Mouse left window PAL_GUI Test
+[PUI_Info] Window 1 gained keyboard focus
+[PUI_Info] Mouse entered window 1
+[PUI_Info] Mouse left window PAL_GUI Test
+[PUI_Info] Mouse entered window 1
+[PUI_Info] Mouse left window PAL_GUI Test
+[PUI_Info] Window 1 lost keyboard focus
+[PUI_Info] Window 1 gained keyboard focus
+[PUI_Info] Mouse entered window 1
+[PUI_Info] Button 10003 click
+[PUI_Info] Button 10003 function
+[PUI_Info] Create window NewWindow
+[PUI_Info] Create Layer 10004
+[PUI_Info] Create Layer 10005
+[PUI_Info] Window 2 shown
+[PUI_Info] Window 1 lost keyboard focus
+[PUI_Info] Window 2 gained keyboard focus
+[PUI_Info] Window 2 exposed
+[PUI_Info] Window 2 lost keyboard focus
+[PUI_Info] Mouse left window PAL_GUI Test
+[PUI_Info] Window 2 gained keyboard focus
+[PUI_Info] Mouse entered window 2
+[PUI_Info] Mouse left window NewWindow
+[PUI_Info] Window 2 lost keyboard focus
+[PUI_Info] Window 2 gained keyboard focus
+[PUI_Info] Window 2 exposed
+[PUI_Info] Window 2 lost keyboard focus
+[PUI_Info] Window 1 gained keyboard focus
+[PUI_Info] Window 1 exposed
+[PUI_Info] Mouse entered window 1
+[PUI_Info] Mouse left window PAL_GUI Test
+[PUI_Info] Window 1 lost keyboard focus
+[PUI_Info] Window 1 gained keyboard focus
+[PUI_Info] Mouse entered window 1
+[PUI_Info] Window 1 exposed
+[PUI_Info] Mouse left window PAL_GUI Test
+[PUI_Info] Mouse entered window 1
+[PUI_Info] Mouse left window PAL_GUI Test
+[PUI_Info] Mouse entered window 1
+[PUI_Info] Button 10003 click
+[PUI_Info] Button 10003 function
+[PUI_Info] Delete window NewWindow
+[PUI_Info] Delete Widgets 10004
+[PUI_Info] Delete Widgets 10005
+[PUI_Info] Window 2 hidden
+[PUI_Info] Button 10003 click
+[PUI_Info] Button 10003 function
+[PUI_Info] Create window NewWindow
+[PUI_Info] Create Layer 10006
+[PUI_Info] Create Layer 10007
+[PUI_Info] Window 3 shown
+[PUI_Info] Window 1 lost keyboard focus
+[PUI_Info] Window 3 gained keyboard focus
+[PUI_Info] Window 3 exposed
+[PUI_Info] Window 3 lost keyboard focus
+[PUI_Info] Mouse left window PAL_GUI Test
+[PUI_Info] Window 3 gained keyboard focus
+[PUI_Info] Window 3 lost keyboard focus
+[PUI_Info] Window 3 gained keyboard focus
+[PUI_Info] Window 3 lost keyboard focus
+[PUI_Info] Window 3 gained keyboard focus
+[PUI_Info] Window 3 exposed
+[PUI_Info] PAL_GUI_Quit
+[PUI_Info] Delete window PAL_GUI Test
+[PUI_Info] Delete Widgets 10001
+[PUI_Info] Delete Widgets 10003
+[PUI_Info] Delete Widgets 10002
+[PUI_Info] Delete window NewWindow
+[PUI_Info] Delete Widgets 10006
+[PUI_Info] Delete Widgets 10007
+[PUI_Info] PAL_GUI_Quit OK
