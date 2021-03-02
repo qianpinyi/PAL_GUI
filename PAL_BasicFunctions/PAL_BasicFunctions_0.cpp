@@ -53,4 +53,29 @@ int GetMonthDaysCount(int m,bool isLeapYear=0)
 	else return mon[m-1];
 }
 
+class BaseTypeFuncAndData
+{
+	public:
+		virtual int CallFunc(int usercode)=0;
+		virtual ~BaseTypeFuncAndData() {};
+};
+
+template <class T> class TypeFuncAndData:public BaseTypeFuncAndData
+{
+	protected:
+		int (*func)(T&,int)=NULL;
+		T funcdata;
+	public:
+		virtual int CallFunc(int usercode)
+		{
+			if (func!=NULL)
+				return func(funcdata,usercode);
+			else return 0;
+		}
+		
+		virtual ~TypeFuncAndData() {}
+		
+		TypeFuncAndData(int (*_func)(T&,int),const T &_funcdata):func(_func),funcdata(_funcdata) {}
+};
+
 #endif

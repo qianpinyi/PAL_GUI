@@ -528,6 +528,7 @@ namespace PAL_GUI
 				 NeedSolvePosEvent=0,
 				
 				 PosFocused=1,
+				 KeyboardFocused=1,
 				 Hidden=0;
 			int NowSolvingPosEventMode=0;//0:common 1:from LoseFocus 2:from OccupyPos 3:virtual PosEvent
 			
@@ -551,6 +552,8 @@ namespace PAL_GUI
 			
 			Widgets *OccupyPosWg=NULL;
 			Widgets *KeyboardInputWg=NULL;
+			
+			BaseTypeFuncAndData *CloseFunc=NULL;//The function to call when closed button was click
 			
 		public:
 			static set <PUI_Window*>& GetAllWindowSet()
@@ -735,6 +738,9 @@ namespace PAL_GUI
 			inline bool IsPosFocused()
 			{return PosFocused;}
 			
+			inline bool IsKeyboardFocused()
+			{return KeyboardFocused;}
+			
 			inline void SetMousePoint(const Point &pt)
 			{SDL_WarpMouseInWindow(win,pt.x,pt.y);}
 			
@@ -753,6 +759,13 @@ namespace PAL_GUI
 			{NowSolvingPosEventMode=mode;}
 			
 			void SetBackgroundColor(const RGBA &co);
+			
+			void SetCloseFunc(BaseTypeFuncAndData *func)
+			{
+				if (CloseFunc!=NULL)
+					delete CloseFunc;
+				CloseFunc=func;
+			}
 			
 			void SetRenderColor(const RGBA &co)
 			{SDL_SetRenderDrawColor(ren,co.r,co.g,co.b,co.a);}
@@ -1227,6 +1240,7 @@ namespace PAL_GUI
 				WidgetType_LayerForBlockViewTemplate,
 				WidgetType_BorderRectLayer,
 				WidgetType_FullFillSlider,
+				WidgetType_DragableLayer,
 				
 				WidgetType_UserAssignStartID
 			};
@@ -1772,6 +1786,9 @@ namespace PAL_GUI
 	PUI_Window::~PUI_Window()
 	{
 		PUI_DD[0]<<"Delete window "<<WindowTitle<<endl;
+		
+		if (CloseFunc!=NULL)
+			delete CloseFunc;
 		
 		delete _BackGroundLayer;
 		delete _MenuLayer;
@@ -2805,7 +2822,109 @@ namespace PAL_GUI
 					AutoDeletePic[i]=0;
 			}
 	};
-	 
+	
+	class DragableLayer:public Widgets
+	{
+		protected:
+			int DragMode=1;//1:MouseLeftClick 2:MouseRightClick 3:MouseLeftDoubleClick
+			bool Draging=0;
+			RGBA LayerColor=RGBA_NONE;
+			Uint32 TimerInterval=12;
+			SDL_TimerID IntervalTimerID=0;
+			Point PinPt;
+			
+			void SetTimerOnOff(bool on)
+			{
+				if (Draging==on) return;
+				if (on) IntervalTimerID=SDL_AddTimer(TimerInterval,PUI_UpdateTimer,new PUI_UpdateTimerData(this,-1));
+				else SDL_RemoveTimer(IntervalTimerID);
+				Draging=on;
+			}
+			
+			virtual void CheckEvent()
+			{
+				const SDL_Event &event=*Win->GetNowSolvingEvent();
+				if (event.type==SDL_USEREVENT)
+					if (event.user.type==PUI_EVENT_UpdateTimer)
+						if (event.user.data1==this)
+						{
+							if (!Win->IsKeyboardFocused())
+								SetTimerOnOff(0);
+							int m;
+							Point pt;
+							m=SDL_GetGlobalMouseState(&pt.x,&pt.y);
+							if ((DragMode==1||DragMode==3)&&!(m&SDL_BUTTON_LMASK)||DragMode==2&&!(m&SDL_BUTTON_RMASK))
+								SetTimerOnOff(0);
+							else Win->SetWindowPos(pt-PinPt);
+							Win->StopSolveEvent();
+						}
+			}
+			
+			virtual void CheckPos()
+			{
+				if (Draging||Win->GetNowSolvingPosEventMode()==1)
+					return;
+				
+				const SDL_Event &event=*Win->GetNowSolvingEvent();
+				switch (event.type)
+				{
+					case SDL_MOUSEBUTTONDOWN:
+						if (event.button.button==SDL_BUTTON_LEFT&&(DragMode==1||DragMode==3&&event.button.clicks==2)||DragMode==2&&event.button.button==SDL_BUTTON_RIGHT)
+						{
+							PinPt=Win->NowPos();
+							SetTimerOnOff(1);
+							Win->StopSolvePosEvent();
+						}
+						break;
+					
+					case SDL_MOUSEBUTTONUP:
+						SetTimerOnOff(0);
+						Win->StopSolvePosEvent();
+						break;
+				}
+			}
+			
+			virtual void Show(Posize &lmt)
+			{
+				Win->RenderFillRect(lmt,LayerColor);
+				Win->Debug_DisplayBorder(gPS);
+			}
+			
+		public:
+			void SetLayerColor(const RGBA &co)
+			{
+				LayerColor=co;
+				Win->SetNeedFreshScreen();
+				Win->SetPresentArea(gPS);
+			}
+			
+			inline void SetDragMode(int mode)
+			{DragMode=mode;}
+			
+			~DragableLayer()
+			{
+				SetTimerOnOff(0);
+			}
+			
+			DragableLayer(int _ID,Widgets *_fa,const Posize &_rPS)
+			{
+				SetID(_ID);
+				PUI_DD[0]<<"Create DragableLayer "<<ID<<endl;
+				Type=WidgetType_DragableLayer;
+				SetFa(_fa);
+				SetrPS(_rPS);
+			}
+			
+			DragableLayer(int _ID,Widgets *_fa,PosizeEX *psex)
+			{
+				SetID(_ID);
+				PUI_DD[0]<<"Create DragableLayer "<<ID<<endl;
+				Type=WidgetType_DragableLayer;
+				SetFa(_fa);
+				AddPsEx(psex);
+			}
+	};
+	
 	class LargeLayerWithScrollBar:public Widgets
 	{
 		protected:
@@ -4683,7 +4802,7 @@ namespace PAL_GUI
 	{
 		protected:
 			SDL_Texture *src=NULL;
-			int stat=0;//0:NotFocus 1:Focus 2:Down_Left 3:Down_Right
+			int stat=0;//0:NotFocus 1:Focus 2:Down_Left_TwiceClick 3:Down_Right 4:Down_Left_OnceClick
 			Posize srcPS;
 			int Mode=0;//0:Fullfill rPS 1:show part that can see in original size,pin centre(MM)
 					   //2:like 1,pin LU 3:like 1,pin RU 4:like 1,pin LD 5:like 1,pin RD
@@ -4694,8 +4813,8 @@ namespace PAL_GUI
 					   //22:like 21,pin LU 23:like 21,pin RU 24:like 21,pin LD 25:like 21,pin RD
 					   //26:like 21,pin MU 27:like 21,pin MD 28:like 21,pin ML 29:like 21,pin MR
 			bool AutoDeletePic=0;
-			void (*func)(T&,bool)=NULL;//bool:1:Left_Click 2:Right_Click 
-			T funcData;		
+			void (*func)(T&,int)=NULL;//int: 0:None 1:Left_Click 2:Left_Double_Click 3:Right_Click
+			T funcData;
 			RGBA BackGroundColor=RGBA_BLACK;
 
 			virtual void CheckPos()
@@ -4718,22 +4837,22 @@ namespace PAL_GUI
 					case SDL_MOUSEBUTTONDOWN:
 						PUI_DD[0]<<"PictureBox "<<ID<<" click"<<endl;
 						if (event.button.button==SDL_BUTTON_LEFT)
-							stat=2;
+							if (event.button.clicks==2)
+								stat=2;
+							else stat=4;
 						else if (event.button.button==SDL_BUTTON_RIGHT)
 							stat=3;
+						else stat=4;
 						Win->StopSolvePosEvent();
 						break;
 					
 					case SDL_MOUSEBUTTONUP:
-						if (stat==2||stat==3)
+						if (InRange(stat,2,4))
 						{
 							if (func!=NULL)
 							{
-								PUI_DD[0]<<"PictureBox "<<ID<<" function "<<(stat==2?"left":"right")<<endl;
-								if (stat==2)
-									func(funcData,0);
-								else if (stat==3)
-									func(funcData,1);
+								PUI_DD[0]<<"PictureBox "<<ID<<" function "<<(stat==2||stat==4?"left":"right")<<endl;
+								func(funcData,stat==4?1:stat);
 								Win->StopSolvePosEvent();
 							}
 							stat=1;
@@ -4807,7 +4926,7 @@ namespace PAL_GUI
 				Win->SetPresentArea(gPS);
 			}
 			
-			inline void SetFunc(void (*_func)(T&,bool),const T &_funcdata)
+			inline void SetFunc(void (*_func)(T&,int),const T &_funcdata)
 			{
 				func=_func;
 				funcData=_funcdata;
@@ -12019,21 +12138,27 @@ namespace PAL_GUI
 			            break;
 			        case SDL_WINDOWEVENT_ENTER:
 			            PUI_DD[0]<<"Mouse entered window "<<event.window.windowID<<endl;
+			            CurrentWindow->PosFocused=1;
 			            break;
 			        case SDL_WINDOWEVENT_LEAVE:
 			            PUI_DD[0]<<"Mouse left window "<<CurrentWindow->WindowTitle<<endl;
+			            CurrentWindow->PosFocused=0;
 //			            CurrentWindow->NowPos=GetGlobalMousePoint()-CurrentWindow->WinPS.GetLU();
 //			            PUI_DD[3]<<"# "<<CurrentWindow->NowPos<<endl;
 //			            goto StartSolvePosEventFlag;
 			            break;
 			        case SDL_WINDOWEVENT_FOCUS_GAINED:
 			            PUI_DD[0]<<"Window "<<event.window.windowID<<" gained keyboard focus"<<endl;
+			            CurrentWindow->KeyboardFocused=1;
 			            break;
 			        case SDL_WINDOWEVENT_FOCUS_LOST:
 			            PUI_DD[0]<<"Window "<<event.window.windowID<<" lost keyboard focus"<<endl;
+			            CurrentWindow->KeyboardFocused=0;
 			            break;
 			        case SDL_WINDOWEVENT_CLOSE:
 			            PUI_DD[0]<<"Window "<<event.window.windowID<<" closed"<<endl;
+			            if (CurrentWindow->CloseFunc!=NULL)
+			           		CurrentWindow->CloseFunc->CallFunc(0);
 			            break;
 			        case SDL_WINDOWEVENT_TAKE_FOCUS:
 			            PUI_DD[0]<<"Window "<<event.window.windowID<<" is offered a focus"<<endl;
@@ -12045,7 +12170,7 @@ namespace PAL_GUI
 			            PUI_DD[0]<<"Window "<<event.window.windowID<<" got unknown event "<<event.window.event<<endl;
 			            break;
 				}
-				break;	
+				break;
 			
 			case SDL_TEXTINPUT:
 				if (PUI_Window::WindowCnt==1)
