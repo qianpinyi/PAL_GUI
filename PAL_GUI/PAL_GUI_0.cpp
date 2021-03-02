@@ -31,6 +31,8 @@
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_syswm.h>
 
+#undef main
+
 #define USE_SDL
 
 #include "../PAL_BasicFunctions/PAL_BasicFunctions_0.cpp"
@@ -40,8 +42,10 @@
 #include "../PAL_BasicFunctions/PAL_BasicFunctions_Debug.cpp"
 #include "../PAL_DataStructure/PAL_SplayTree.cpp"
 
-#if defined(WIN32)
-	#include <Windows.h> 
+//#define USE_WINDOWS_IME
+
+#if defined(USE_WINDOWS_IME)
+	#include <Windows.h>
 #endif
 
 namespace PAL_GUI
@@ -1098,7 +1102,7 @@ namespace PAL_GUI
 	
 	void SetCurrentIMEWindowPos(const Point &cursorPt,const Posize &excludePS,PUI_Window *Win)
 	{
-	#if defined(WIN32)
+	#if defined(USE_WINDOWS_IME)
 		SDL_SysWMinfo info;
 		SDL_VERSION(&info.version);
 		if (SDL_GetWindowWMInfo(Win->GetSDLWindows(),&info))
@@ -1133,7 +1137,7 @@ namespace PAL_GUI
 		static bool lastState=1;
 		if (on==lastState) return;
 		lastState=on;
-	#if defined(WIN32)
+	#if defined(USE_WINDOWS_IME)
 		SDL_SysWMinfo info;
 		SDL_VERSION(&info.version);
 		if (SDL_GetWindowWMInfo(Win->GetSDLWindows(),&info))
@@ -1637,8 +1641,8 @@ namespace PAL_GUI
 			PosizeEX_Fa6(Uint8 _xn,Uint8 _yn,double a,double b,double c,double d)
 			:xNotConsider(_xn),yNotConsider(_yn),ra(a),rb(b),rc(c),rd(d)
 			{
-				if (!InRange(xNotConsider,1,3)) PUI_DD[2]<<"PosizeEX: xNotConsiderValue is set "<<xNotConsider<<" which cannot be resolved!"<<endl;
-				if (!InRange(yNotConsider,1,3)) PUI_DD[2]<<"PosizeEX: yNotConsiderValue is set "<<yNotConsider<<" which cannot be resolved!"<<endl;
+				if (!InRange(xNotConsider,0,3)) PUI_DD[2]<<"PosizeEX: xNotConsiderValue is set "<<xNotConsider<<" which cannot be resolved!"<<endl;
+				if (!InRange(yNotConsider,0,3)) PUI_DD[2]<<"PosizeEX: yNotConsiderValue is set "<<yNotConsider<<" which cannot be resolved!"<<endl;
 			}
 	};
 	
