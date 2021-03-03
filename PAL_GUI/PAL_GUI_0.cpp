@@ -1065,15 +1065,13 @@ namespace PAL_GUI
 	    		delete p;
 	    		return 0;
 			}
-			
-	    SDL_Event event;
-	    SDL_UserEvent userevent;
-	    userevent.type=PUI_EVENT_UpdateTimer;
-	    userevent.code=p->cnt==-2?p->sta.size():p->cnt;//how many times to run it needs
-	    userevent.data1=p->tar;//target widgets
-	    userevent.data2=p->data;
-	    event.type=SDL_USEREVENT;
-	    event.user=userevent;
+		
+		SDL_Event event;
+		SDL_memset(&event,0,sizeof(event));
+		event.type=PUI_EVENT_UpdateTimer;
+	    event.user.code=p->cnt==-2?p->sta.size():p->cnt;//how many times to run it needs
+	    event.user.data1=p->tar;//target widgets
+	    event.user.data2=p->data;
 	    SDL_PushEvent(&event);
 	    
 	    if (p->cnt==-2)//use interval in stack
@@ -1829,7 +1827,7 @@ namespace PAL_GUI
 				if (Win->GetNowSolvingPosEventMode()==1)
 				{
 					if (stat!=0)
-						if (!CoverLmt.In(Win->NowPos()))
+						if (!CoverLmt.In(Win->NowPos())||!Win->IsPosFocused())
 						{
 							stat=0;
 							RemoveNeedLoseFocus();
@@ -2082,7 +2080,7 @@ namespace PAL_GUI
 				if (Win->GetNowSolvingPosEventMode()==1)
 				{
 					if (stat!=0)
-						if (!CoverLmt.In(Win->NowPos()))
+						if (!CoverLmt.In(Win->NowPos())||!Win->IsPosFocused())
 						{
 							stat=0;
 							RemoveNeedLoseFocus();
@@ -2221,17 +2219,16 @@ namespace PAL_GUI
 			virtual void CheckEvent()
 			{
 				const SDL_Event &event=*this->Win->GetNowSolvingEvent();
-				if (event.type==SDL_USEREVENT)
-					if (event.user.type==PUI_EVENT_UpdateTimer)
-						if (event.user.data1==this)
-						{
-							if (event.user.code==0)
-								IntervalTimerID=0;
-							chunkPercent=this->on?1-event.user.code*1.0/UpdataCnt:event.user.code*1.0/UpdataCnt;
-							this->Win->StopSolveEvent();
-							this->Win->SetNeedFreshScreen();
-							this->Win->SetPresentArea(this->gPS);
-						}
+				if (event.type==PUI_EVENT_UpdateTimer)
+					if (event.user.data1==this)
+					{
+						if (event.user.code==0)
+							IntervalTimerID=0;
+						chunkPercent=this->on?1-event.user.code*1.0/UpdataCnt:event.user.code*1.0/UpdataCnt;
+						this->Win->StopSolveEvent();
+						this->Win->SetNeedFreshScreen();
+						this->Win->SetPresentArea(this->gPS);
+					}
 			}
 			
 			virtual void CheckPos()
@@ -2240,7 +2237,7 @@ namespace PAL_GUI
 				if (this->Win->GetNowSolvingPosEventMode()==1)
 				{
 					if (this->stat!=0)
-						if (!this->CoverLmt.In(this->Win->NowPos()))
+						if (!this->CoverLmt.In(this->Win->NowPos())||!this->Win->IsPosFocused())
 						{
 							this->stat=0;
 							this->RemoveNeedLoseFocus();
@@ -2372,7 +2369,7 @@ namespace PAL_GUI
 				if (Win->GetNowSolvingPosEventMode()==1)
 				{
 					if (stat!=0)
-						if (!CoverLmt.In(Win->NowPos()))
+						if (!CoverLmt.In(Win->NowPos())||!Win->IsPosFocused())
 						{
 							stat=0;
 							Win->SetPresentArea(Posize(gPS.x,gPS.y+CurrentChoose*eachChoiceHeight,gPS.w,eachChoiceHeight));
@@ -2660,7 +2657,7 @@ namespace PAL_GUI
 				if (Win->GetNowSolvingPosEventMode()==1)
 				{
 					if (stat!=0)
-						if (!CoverLmt.In(Win->NowPos())||(ThroughBlankPixel&&GetSDLSurfacePixel(sur0,Win->NowPos()-gPS.GetLU()).a<=ThroughLmtValue))
+						if (!CoverLmt.In(Win->NowPos())||!Win->IsPosFocused()||(ThroughBlankPixel&&GetSDLSurfacePixel(sur0,Win->NowPos()-gPS.GetLU()).a<=ThroughLmtValue))
 						{
 							stat=0;
 							RemoveNeedLoseFocus();
@@ -2844,20 +2841,19 @@ namespace PAL_GUI
 			virtual void CheckEvent()
 			{
 				const SDL_Event &event=*Win->GetNowSolvingEvent();
-				if (event.type==SDL_USEREVENT)
-					if (event.user.type==PUI_EVENT_UpdateTimer)
-						if (event.user.data1==this)
-						{
-							if (!Win->IsKeyboardFocused())
-								SetTimerOnOff(0);
-							int m;
-							Point pt;
-							m=SDL_GetGlobalMouseState(&pt.x,&pt.y);
-							if ((DragMode==1||DragMode==3)&&!(m&SDL_BUTTON_LMASK)||DragMode==2&&!(m&SDL_BUTTON_RMASK))
-								SetTimerOnOff(0);
-							else Win->SetWindowPos(pt-PinPt);
-							Win->StopSolveEvent();
-						}
+				if (event.type==PUI_EVENT_UpdateTimer)
+					if (event.user.data1==this)
+					{
+						if (!Win->IsKeyboardFocused())
+							SetTimerOnOff(0);
+						int m;
+						Point pt;
+						m=SDL_GetGlobalMouseState(&pt.x,&pt.y);
+						if ((DragMode==1||DragMode==3)&&!(m&SDL_BUTTON_LMASK)||DragMode==2&&!(m&SDL_BUTTON_RMASK))
+							SetTimerOnOff(0);
+						else Win->SetWindowPos(pt-PinPt);
+						Win->StopSolveEvent();
+					}
 			}
 			
 			virtual void CheckPos()
@@ -3107,25 +3103,24 @@ namespace PAL_GUI
 						default :
 							PUI_DD[2]<<"LargeLayerWithScrollBar "<<ID<<":Wheel Such state "<<stat<<" is not considered yet!"<<endl;
 					}
-				else if (event.type==SDL_USEREVENT)
-					if (event.user.type==PUI_EVENT_UpdateTimer)
-						if (event.user.data1==this)
-							if (SmoothScrollData_LeftCnt>0)
-							{
-								int d=SmoothScrollData_Delta/SmoothScrollData_LeftCnt;
-								if (d==0)
-									d=SmoothScrollData_Delta;
-								SetViewPort(SmoothScrollData_Direction_y?6:5,d);
-								SmoothScrollData_Delta-=d;
-								SmoothScrollData_LeftCnt--;
-								if (SmoothScrollData_Delta==0||SmoothScrollData_LeftCnt<=0)
-									if (SmoothScrollTimerID!=0)
-									{
-										SDL_RemoveTimer(SmoothScrollTimerID);
-										SmoothScrollTimerID=0;
-									}
-								Win->StopSolveEvent();
-							}
+				else if (event.type==PUI_EVENT_UpdateTimer)
+					if (event.user.data1==this)
+						if (SmoothScrollData_LeftCnt>0)
+						{
+							int d=SmoothScrollData_Delta/SmoothScrollData_LeftCnt;
+							if (d==0)
+								d=SmoothScrollData_Delta;
+							SetViewPort(SmoothScrollData_Direction_y?6:5,d);
+							SmoothScrollData_Delta-=d;
+							SmoothScrollData_LeftCnt--;
+							if (SmoothScrollData_Delta==0||SmoothScrollData_LeftCnt<=0)
+								if (SmoothScrollTimerID!=0)
+								{
+									SDL_RemoveTimer(SmoothScrollTimerID);
+									SmoothScrollTimerID=0;
+								}
+							Win->StopSolveEvent();
+						}
 			}
 			
 			/*
@@ -3140,7 +3135,7 @@ namespace PAL_GUI
 				if (Win->GetNowSolvingPosEventMode()==1)
 				{
 					if (stat!=0)
-						if (!CoverLmt.In(Win->NowPos()))
+						if (!Win->IsPosFocused()||!CoverLmt.In(Win->NowPos()))
 						{
 							stat=0;
 							RemoveNeedLoseFocus();
@@ -3608,14 +3603,14 @@ namespace PAL_GUI
 				if (Win->GetNowSolvingPosEventMode()==1)
 				{
 					if (stat!=0)
-						if (!(DLEventPs&CoverLmt).In(Win->NowPos()))
-							{
-								PUI_DD[0]<<"TwinLayerWithDivideLine "<<ID<<" losefocus"<<endl;
-								stat=0;
-								RemoveNeedLoseFocus();
-								Win->SetNeedFreshScreen();
-								Win->SetPresentArea(DLShowPs);
-							}
+						if (!Win->IsPosFocused()||!(DLEventPs&CoverLmt).In(Win->NowPos()))
+						{
+							PUI_DD[0]<<"TwinLayerWithDivideLine "<<ID<<" losefocus"<<endl;
+							stat=0;
+							RemoveNeedLoseFocus();
+							Win->SetNeedFreshScreen();
+							Win->SetPresentArea(DLShowPs);
+						}
 					return;
 				}
 				
@@ -3956,8 +3951,8 @@ namespace PAL_GUI
 						}
 						break;
 						
-					case SDL_USEREVENT:
-						if (event.user.type==PUI_EVENT_UpdateTimer)
+					default:
+						if (event.type==PUI_EVENT_UpdateTimer)
 							if (event.user.data1==this)
 							{
 								
@@ -3972,14 +3967,14 @@ namespace PAL_GUI
 				if (Win->GetNowSolvingPosEventMode()==1)
 				{
 					if (stat!=0)
-						if (!CoverLmt.In(Win->NowPos()))
-							{
-								stat=0;
-								FocusingPos=-1;
-								RemoveNeedLoseFocus();
-								Win->SetNeedFreshScreen();
-								Win->SetPresentArea(gPS);
-							}
+						if (!Win->IsPosFocused()||!CoverLmt.In(Win->NowPos()))
+						{
+							stat=0;
+							FocusingPos=-1;
+							RemoveNeedLoseFocus();
+							Win->SetNeedFreshScreen();
+							Win->SetPresentArea(gPS);
+						}
 					return;
 				}
 				
@@ -4337,14 +4332,14 @@ namespace PAL_GUI
 				if (Win->GetNowSolvingPosEventMode()==1)
 				{
 					if (stat!=0)
-						if (!CoverLmt.In(Win->NowPos()))
-							{
-								PUI_DD[0]<<"Slider "<<ID<<" losefocus"<<endl;
-								stat=0;
-								RemoveNeedLoseFocus();
-								Win->SetNeedFreshScreen();
-								Win->SetPresentArea(gPS);
-							}
+						if (!Win->IsPosFocused()||!CoverLmt.In(Win->NowPos()))
+						{
+							PUI_DD[0]<<"Slider "<<ID<<" losefocus"<<endl;
+							stat=0;
+							RemoveNeedLoseFocus();
+							Win->SetNeedFreshScreen();
+							Win->SetPresentArea(gPS);
+						}
 					return;
 				}
 				
@@ -4543,14 +4538,14 @@ namespace PAL_GUI
 				if (Win->GetNowSolvingPosEventMode()==1)
 				{
 					if (stat!=0)
-						if (!CoverLmt.In(Win->NowPos()))
-							{
-								PUI_DD[0]<<"FullFillSlider "<<ID<<" losefocus"<<endl;
-								stat=0;
-								RemoveNeedLoseFocus();
-								Win->SetNeedFreshScreen();
-								Win->SetPresentArea(gPS);
-							}
+						if (!Win->IsPosFocused()||!CoverLmt.In(Win->NowPos()))
+						{
+							PUI_DD[0]<<"FullFillSlider "<<ID<<" losefocus"<<endl;
+							stat=0;
+							RemoveNeedLoseFocus();
+							Win->SetNeedFreshScreen();
+							Win->SetPresentArea(gPS);
+						}
 					return;
 				}
 				
@@ -4824,7 +4819,7 @@ namespace PAL_GUI
 				if (Win->GetNowSolvingPosEventMode()==1)
 				{
 					if (stat!=0)
-						if (!CoverLmt.In(Win->NowPos()))
+						if (!Win->IsPosFocused()||!CoverLmt.In(Win->NowPos()))
 						{
 							stat=0;
 							RemoveNeedLoseFocus();
@@ -5039,7 +5034,7 @@ namespace PAL_GUI
 				if (Win->GetNowSolvingPosEventMode()==1)
 				{
 					if (stat!=0)
-						if (!CoverLmt.In(Win->NowPos()))
+						if (!Win->IsPosFocused()||!CoverLmt.In(Win->NowPos()))
 						{
 							stat=0;
 							RemoveNeedLoseFocus();
@@ -5238,14 +5233,14 @@ namespace PAL_GUI
 				if (Win->GetNowSolvingPosEventMode()==1)
 				{
 					if (stat!=0)
-						if (!CoverLmt.In(Win->NowPos()))
-							{
-								stat=0;
-								Win->SetPresentArea(GetLinePosize(FocusChoose));
-								FocusChoose=-1;
-								RemoveNeedLoseFocus();
-								Win->SetNeedFreshScreen();
-							}
+						if (!Win->IsPosFocused()||!CoverLmt.In(Win->NowPos()))
+						{
+							stat=0;
+							Win->SetPresentArea(GetLinePosize(FocusChoose));
+							FocusChoose=-1;
+							RemoveNeedLoseFocus();
+							Win->SetNeedFreshScreen();
+						}
 					return;
 				}
 				
@@ -5752,14 +5747,14 @@ namespace PAL_GUI
 				if (Win->GetNowSolvingPosEventMode()==1)
 				{
 					if (stat!=0)
-						if (!CoverLmt.In(Win->NowPos()))
-							{
-								stat=0;
-								Win->SetPresentArea(GetBlockPosize(FocusChoose));
-								FocusChoose=-1;
-								RemoveNeedLoseFocus();
-								Win->SetNeedFreshScreen();
-							}
+						if (!Win->IsPosFocused()||!CoverLmt.In(Win->NowPos()))
+						{
+							stat=0;
+							Win->SetPresentArea(GetBlockPosize(FocusChoose));
+							FocusChoose=-1;
+							RemoveNeedLoseFocus();
+							Win->SetNeedFreshScreen();
+						}
 					return;
 				}
 				
@@ -6190,15 +6185,15 @@ namespace PAL_GUI
 				if (Win->GetNowSolvingPosEventMode()==1)
 				{
 					if (stat!=0)
-						if (!CoverLmt.In(Win->NowPos()))
-							{
-								stat=0;
-								if (FocusChoose!=-1)
-									Win->SetPresentArea(GetNodePosize(FocusChoose));
-								FocusChoose=-1;
-								RemoveNeedLoseFocus();
-								Win->SetNeedFreshScreen();
-							}
+						if (!Win->IsPosFocused()||!CoverLmt.In(Win->NowPos()))
+						{
+							stat=0;
+							if (FocusChoose!=-1)
+								Win->SetPresentArea(GetNodePosize(FocusChoose));
+							FocusChoose=-1;
+							RemoveNeedLoseFocus();
+							Win->SetNeedFreshScreen();
+						}
 					return;
 				}
 				
@@ -6621,7 +6616,7 @@ namespace PAL_GUI
 				if (Win->GetNowSolvingPosEventMode()==1)
 				{
 					if (stat!=0)
-						if (!CoverLmt.In(Win->NowPos()))
+						if (!Win->IsPosFocused()||!CoverLmt.In(Win->NowPos()))
 						{
 							if (stat<=4)
 								Win->SetPresentArea(GetLinePosize(FocusChoose));
@@ -8415,7 +8410,7 @@ namespace PAL_GUI
 				if (Win->GetNowSolvingPosEventMode()==1)
 				{
 					if (stat!=0)
-						if (!CoverLmt.In(Win->NowPos()))
+						if (!Win->IsPosFocused()||!CoverLmt.In(Win->NowPos()))
 						{
 							stat=0;
 							RemoveNeedLoseFocus();
@@ -8678,7 +8673,7 @@ namespace PAL_GUI
 				if (Win->GetNowSolvingPosEventMode()==1)
 				{
 					if (stat!=0)
-						if (!CoverLmt.In(Win->NowPos()))
+						if (!Win->IsPosFocused()||!CoverLmt.In(Win->NowPos()))
 						{
 							stat=0;
 							NowFocus=0;
@@ -8882,7 +8877,7 @@ namespace PAL_GUI
 				for (int i=0;i<=2;++i)
 					for (int j=0;j<=1;++j)
 						TriangleTex[i][j]=SharedTexturePtr(NULL);
-				for (int i=0;i<=6;++i)
+				for (int i=0;i<6;++i)
 					BackgroundColor[i]=RGBA_NONE;
 				JointTriangleColor[0]={250,250,250,255};
 				JointTriangleColor[1]={240,240,240,255};
@@ -8901,7 +8896,7 @@ namespace PAL_GUI
 				for (int i=0;i<=2;++i)
 					for (int j=0;j<=1;++j)
 						TriangleTex[i][j]=SharedTexturePtr(NULL);
-				for (int i=0;i<=6;++i)
+				for (int i=0;i<6;++i)
 					BackgroundColor[i]=RGBA_NONE;
 				JointTriangleColor[0]={250,250,250,255};
 				JointTriangleColor[1]={240,240,240,255};
@@ -9472,8 +9467,8 @@ namespace PAL_GUI
 						break;
 					}
 						
-					case SDL_USEREVENT:
-						if (event.user.type==PUI_EVENT_UpdateTimer)
+					default:
+						if (event.type==PUI_EVENT_UpdateTimer)
 							if (event.user.data1==this)
 							{
 								SetSposFromPos2();
@@ -9489,7 +9484,7 @@ namespace PAL_GUI
 				const SDL_Event &event=*Win->GetNowSolvingEvent();
 				if (Win->GetNowSolvingPosEventMode()==1)
 				{
-					if (!CoverLmt.In(Win->NowPos()))
+					if (!Win->IsPosFocused()||!CoverLmt.In(Win->NowPos()))
 						if (StateInput)
 						{
 							if (event.type==SDL_MOUSEBUTTONDOWN)
@@ -9610,7 +9605,7 @@ namespace PAL_GUI
 					Win->RenderFillRect(Posize(!Editing?CursorPosX=x+gPS.x:x+gPS.x,BorderWidth+gPS.y,2,rPS.h-BorderWidth*2)&lmt,BackgroundColor[1+EnsureInRange(stat,0,2)]?BackgroundColor[1+EnsureInRange(stat,0,2)]:ThemeColor[2*EnsureInRange(stat,0,2)+1]);
 				Win->RenderFillRect(Posize(x+gPS.x,BorderWidth+gPS.y,w,rPS.h-BorderWidth*2)&lmt,BackgroundColor[1+EnsureInRange(stat,0,2)]?BackgroundColor[1+EnsureInRange(stat,0,2)]:ThemeColor[2*EnsureInRange(stat,0,2)+1]);
 				
-				int i,s;
+				int i=0,s;
 				if (Text.length()!=0)
 					for (i=ShowPos.l,s=BorderWidth;i<Text.length()&&s+ChWidth[i]<=rPS.w-BorderWidth;s+=ChWidth[i++])
 					{
@@ -10601,7 +10596,7 @@ namespace PAL_GUI
 				const SDL_Event &event=*Win->GetNowSolvingEvent();
 				if (Win->GetNowSolvingPosEventMode()==1)
 				{
-					if (!CoverLmt.In(Win->NowPos()))
+					if (!Win->IsPosFocused()||!CoverLmt.In(Win->NowPos()))
 						if (StateInput)
 						{
 							if (event.type==SDL_MOUSEBUTTONDOWN)
@@ -11045,7 +11040,7 @@ namespace PAL_GUI
 				if (Win->GetNowSolvingPosEventMode()==1)
 				{
 					if (stat!=0)
-						if (!CoverLmt.In(Win->NowPos()))
+						if (!Win->IsPosFocused()||!CoverLmt.In(Win->NowPos()))
 						{
 							stat=0;
 							if (FocusChoose!=-1)
@@ -11551,7 +11546,7 @@ namespace PAL_GUI
 				if (Win->GetNowSolvingPosEventMode()==1)
 				{
 					if (stat!=0)
-						if (!CoverLmt.In(Win->NowPos()))
+						if (!Win->IsPosFocused()||!CoverLmt.In(Win->NowPos()))
 						{
 							stat=0;
 							if (FocusChoose!=-1)
@@ -12143,9 +12138,17 @@ namespace PAL_GUI
 			        case SDL_WINDOWEVENT_LEAVE:
 			            PUI_DD[0]<<"Mouse left window "<<CurrentWindow->WindowTitle<<endl;
 			            CurrentWindow->PosFocused=0;
-//			            CurrentWindow->NowPos=GetGlobalMousePoint()-CurrentWindow->WinPS.GetLU();
-//			            PUI_DD[3]<<"# "<<CurrentWindow->NowPos<<endl;
-//			            goto StartSolvePosEventFlag;
+			            if (CurrentWindow->OccupyPosWg==NULL)
+			            {
+			            	CurrentWindow->NowSolvingPosEventMode=1;
+							for (PUI_Window::LoseFocusLinkTable *p=CurrentWindow->LoseFocusWgHead;p;p=p->nxt)
+								if (p->wg!=NULL)
+									if (p->wg->Enabled)
+										p->wg->CheckPos();
+									else PUI_DD[2]<<"NeedLoseFocusWg "<<p->wg->ID<<" is disabled!"<<endl;
+								else PUI_DD[2]<<"NeedLoseFocusWidgets is NULL"<<endl;
+							CurrentWindow->NowSolvingPosEventMode=0;
+						}
 			            break;
 			        case SDL_WINDOWEVENT_FOCUS_GAINED:
 			            PUI_DD[0]<<"Window "<<event.window.windowID<<" gained keyboard focus"<<endl;
@@ -12241,7 +12244,7 @@ namespace PAL_GUI
 				
 			StartSolvePosEventFlag:
 				CurrentWindow->NowSolvingEvent=&event;
-				CurrentWindow->NeedSolvePosEvent=1;	
+				CurrentWindow->NeedSolvePosEvent=1;
 				
 				if (CurrentWindow->OccupyPosWg!=NULL)
 					if (CurrentWindow->OccupyPosWg->Enabled)
@@ -12279,14 +12282,17 @@ namespace PAL_GUI
 				re=CurrentWindow->NeedSolveEvent?2:0;
 				break;
 				
-			case SDL_USEREVENT:
-				if (event.user.type==PUI_EVENT_UpdateTimer)
-					((Widgets*)event.user.data1)->CheckEvent();
-				re=0;
-				break;
-			//Maybe need fix 
-			
 			default:
+				if (event.type==PUI_EVENT_UpdateTimer)
+				{
+					Widgets *tar=(Widgets*)event.user.data1;
+					CurrentWindow=tar->Win;
+					CurrentWindow->NowSolvingEvent=&event;
+					CurrentWindow->NeedSolveEvent=1;
+					tar->CheckEvent();
+					CurrentWindow->NeedSolveEvent=0;
+					re=0;
+				}
 //				PUI_DD[1]<<"Such event was not considered yet!"<<endl;
 //				EventSolvedFlag=0;
 //				MenusLayer->_SolveEvent(event);
@@ -12354,6 +12360,8 @@ namespace PAL_GUI
 		char *basepath=SDL_GetBasePath();//??
 		string path(basepath);
 		SDL_free(basepath);
+		
+		SDL_SetHint(SDL_HINT_MOUSE_FOCUS_CLICKTHROUGH,"1");
 		
 		PUI_DD.SetLOGFile(path+"PAL_GUI_DebugLog.txt");
 		PUI_DD%DebugOut_CERR_LOG;

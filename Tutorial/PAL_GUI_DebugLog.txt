@@ -6,11 +6,6 @@
 [PUI_Info] Window 1 shown
 [PUI_Info] Window 1 gained keyboard focus
 [PUI_Info] Window 1 exposed
-[PUI_Info] Mouse entered window 1
-[PUI_Info] Mouse left window PAL_GUI Test
-[PUI_Info] Mouse entered window 1
-[PUI_Info] Mouse left window PAL_GUI Test
-[PUI_Info] Window 1 closed
 [PUI_Info] PAL_GUI_Quit
 [PUI_Info] Delete window PAL_GUI Test
 [PUI_Info] Delete Widgets 10001
