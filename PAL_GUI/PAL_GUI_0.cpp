@@ -354,15 +354,26 @@ namespace PAL_GUI
 	
 	struct PUI_Font
 	{
-		PUI_Font_Struct *fonts=NULL;
-		int Size=0;
+		int Size=0;//>=0:PUI_Font <0:ttfFont
+		union
+		{
+			PUI_Font_Struct *fonts;
+			TTF_Font *ttfFont;
+		};
 		
 		inline TTF_Font* operator () () const
-		{return (*fonts)[Size];}
+		{
+			if (Size==-1) return ttfFont;
+			else return (*fonts)[Size];
+		}
 
 		PUI_Font(PUI_Font_Struct *_fonts=&PUI_DefaultFonts,int _size=0):fonts(_fonts),Size(_size) {}
+		
 		PUI_Font(PUI_Font_Struct &_fonts,int _size=0):fonts(&_fonts),Size(_size) {}
+		
 		PUI_Font(int _size):fonts(&PUI_DefaultFonts),Size(_size) {}
+		
+		PUI_Font(TTF_Font *ttffont):ttfFont(ttffont),Size(-1) {}
 	};
 	
 	//Surface/Texture/Drawing/... Functions:
@@ -555,6 +566,13 @@ namespace PAL_GUI
 			
 			BaseTypeFuncAndData *CloseFunc=NULL;//The function to call when closed button was click
 			
+			void RefreshWinPS()
+			{
+				SDL_GetWindowPosition(win,&WinPS.x,&WinPS.y);
+				SDL_GetWindowSize(win,&WinPS.w,&WinPS.h);
+				NeedUpdatePosize=1;
+			}
+			
 		public:
 			static set <PUI_Window*>& GetAllWindowSet()
 			{return AllWindow;}
@@ -669,13 +687,25 @@ namespace PAL_GUI
 			}
 			
 			inline void SetFullScreen()
-			{SDL_SetWindowFullscreen(win,SDL_WINDOW_FULLSCREEN);}
+			{
+				SDL_SetWindowFullscreen(win,SDL_WINDOW_FULLSCREEN);
+				RefreshWinPS();
+			}
 			
 			inline void SetWindowFullScreen()
-			{SDL_SetWindowFullscreen(win,SDL_WINDOW_FULLSCREEN_DESKTOP);}
+			{
+				SDL_SetWindowFullscreen(win,SDL_WINDOW_FULLSCREEN_DESKTOP);
+				RefreshWinPS();
+			}
 			
 			inline void CancelFullScreen()
-			{SDL_SetWindowFullscreen(win,0);}
+			{
+				SDL_SetWindowFullscreen(win,0);
+				RefreshWinPS();
+			}
+			
+			inline bool IsFullScreen()
+			{return SDL_GetWindowFlags(win)&SDL_WINDOW_FULLSCREEN;}
 				
 			inline void SetWindowBordered(bool bordered)
 			{SDL_SetWindowBordered(win,bordered?SDL_TRUE:SDL_FALSE);}
@@ -1595,6 +1625,12 @@ namespace PAL_GUI
 			{
 				delete PsEx;
 				PsEx=0; 
+			}
+			
+			void ReAddPsEx(PosizeEX *psex)
+			{
+				RemoveAllPsEx();
+				AddPsEx(psex);
 			}
 			
 			virtual ~Widgets()
@@ -4920,6 +4956,9 @@ namespace PAL_GUI
 				Win->SetNeedFreshScreen();
 				Win->SetPresentArea(gPS);
 			}
+			
+			inline Posize GetPictureSize()
+			{return srcPS;}
 			
 			inline void SetFunc(void (*_func)(T&,int),const T &_funcdata)
 			{

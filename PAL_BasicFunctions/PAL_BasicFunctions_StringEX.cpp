@@ -7,410 +7,6 @@
 #include <fstream>
 #include <ctime>
 
-int strTOint(const std::string &str)
-{
-	int x=0;
-	for (size_t i=0;i<str.length();++i)
-		x*=10,x+=str[i]-'0';
-	return x;
-}
-
-long long strTOll(const std::string &str)
-{
-	long long x=0;
-	for (size_t i=0;i<str.length();++i)
-		x*=10,x+=str[i]-'0';
-	return x;
-}
-
-double strTOdb(const std::string &str)
-{
-	double x=0;
-	for (size_t i=0,flag=0;i<str.length();++i)
-		if (str[i]=='.') flag=1;
-		else if (flag==0) x*=10,x+=str[i]-'0';
-		else x+=(double(str[i]-'0'))/(flag*=10);
-	return x;
-}
-
-std::string llTOstr(long long x,unsigned int w=1)
-{
-//	if (x==0) return "0";
-	std::string re;
-	if (x<0) re+="-",x=-x;
-	std::stack <char> sta;
-	while (x)
-		sta.push(x%10+'0'),x/=10;
-	if (w!=0)
-		while (sta.size()<w)
-			sta.push('0');
-	while (!sta.empty())
-		re+=sta.top(),sta.pop();
-	return re;
-}
-
-std::string ullTOstr(unsigned long long x,unsigned int w=1)
-{
-	std::string re;
-	std::stack <char> sta;
-	while (x)
-		sta.push(x%10+'0'),x/=10;
-	if (w!=0)
-		while (sta.size()<w)
-			sta.push('0');
-	while (!sta.empty())
-		re+=sta.top(),sta.pop();
-	return re;
-}
-
-bool strISll(const std::string &str)
-{
-	size_t p=0;
-	if (str[0]=='-')
-		++p;
-	while (p<str.length())
-		if (str[p]<'0'||str[p]>'9')
-			return 0;
-		else ++p;
-	return 1;
-}
-
-bool strISull(const std::string &str)
-{
-	for (auto sp:str)
-		if (sp<'0'||sp>'9')
-			return 0;
-	return 1;
-}
-
-std::string ReplaceCharInStr(std::string str,const size_t &L,const size_t &R,const char &ch1,const char &ch2)
-{
-	for (size_t i=L;i<=R;++i)
-		if (str[i]==ch1)
-			str[i]=ch2;
-	return str;
-}
-
-std::string ReplaceCharInStr(const std::string &str,const char &ch1,const char &ch2)
-{
-	if (str.empty()) return "";
-	return ReplaceCharInStr(str,0,str.length()-1,ch1,ch2);
-}
-
-std::string DeletePreBlank(const std::string &str)
-{
-	for (size_t i=0;i<str.length();++i)
-		switch (str[i])
-		{
-			case '\n':break;//??
-			case '\r':break;//??
-			case '\t':break;
-			case ' ' :break;
-			case '\0':break;
-			default:
-				return str.substr(i,str.length()-i);
-		}
-	return "";
-}
-
-std::string DeleteEndBlank(const std::string &str)
-{
-	if (str.empty()) return "";
-	for (size_t i=str.length()-1;i>=0;--i)
-		switch (str[i])
-		{
-			case '\n':break;//??
-			case '\r':break;//??
-			case '\t':break;
-			case ' ' :break;
-			case '\0':break;
-			default:
-				return str.substr(0,i+1);
-		}
-	return "";
-}
-
-std::wstring DeleteEndBlank(const std::wstring &wstr)
-{
-	if (wstr.empty()) return L"";
-	for (size_t i=wstr.length()-1;i>=0;--i)
-		switch (wstr[i])
-		{
-			case L'\n':break;//??
-			case L'\r':break;//??
-			case L'\t':break;
-			case L' ' :break;
-			case L'\0':break;
-			default:
-				return wstr.substr(0,i+1);
-		}
-	return L"";
-}
-
-std::string CutFirstCharInvolveSubStr(const std::string &str,const char &ch)
-{
-	size_t pos1=0,pos2=0;
-	pos1=str.find(ch);
-	if (pos1+1<str.length())
-		pos2=str.find(pos1+1,ch);
-	if (pos1<pos2&&pos1!=str.npos&&pos2!=str.npos) return str.substr(pos1+1,pos2-pos1-1);
-	else return "";
-}
-
-std::string CutFirstSubStringBetweenChar(const std::string &str,char chL,char chR)//chL,chR !=0
-{
-	std::string re;
-	for (auto sp:str)
-		if (chL!=0)
-			sp==chL?chL=0:0;
-		else if (sp==chR)
-			return re;
-		else re+=sp;
-	return "";
-}
-
-std::string GetAftername(const std::string &str)
-{
-	if (str.empty()) return "";
-	size_t p=str.rfind(".",str.length()-1);
-	if (p==str.npos) return "";
-	return str.substr(p,str.length()-p);
-}
-
-std::string GetWithOutAftername(const std::string &str)
-{
-	if (str.empty()) return "";
-	size_t p=str.rfind(".",str.length()-1);
-	if (p==str.npos) return str;
-	return str.substr(0,p);
-}
-
-std::string GetLastAfterBackSlash(const std::string &str)
-{
-	if (str.empty()) return "";
-	size_t p=str.rfind("\\",str.length()-1);
-	if (p==str.npos||p==str.length()-1) return "";
-	return str.substr(p+1,str.length()-p-1);
-}
-
-std::string GetPreviousBeforeBackSlash(const std::string &str)
-{
-	if (str.empty()) return "";
-	size_t p=str.rfind("\\",str.length()-1);
-	if (p==str.npos||p==0) return "";
-	return str.substr(0,p);
-}
-
-std::string Atoa(std::string str)
-{
-	for (size_t i=0;i<str.length();++i)
-		if ('A'<=str[i]&&str[i]<='Z')
-			str[i]+='a'-'A';
-	return str;
-}
-
-char Atoa(char ch)
-{
-	if ('A'<=ch&&ch<='Z')
-		return ch-'A'+'a';
-	else return ch;
-}
-
-std::string atoA(std::string str)
-{
-	for (size_t i=0;i<str.length();++i)	
-		if ('a'<=str[i]&&str[i]<='z')
-			str[i]+='A'-'a';
-	return str;
-}
-
-std::string GetRandStr(int w,const std::vector <char> &charset)
-{
-	std::string re;
-	for (int i=1;i<=w;++i)
-		re+=charset[rand()%charset.size()];
-	return re;
-}
-
-void ReplaceXMLescapecharWithReal(std::string &str)
-{
-	while (1)
-	{
-		size_t c=str.find("&amp;");
-		if (c==str.npos) break;
-		str.replace(c,5,"&");
-	}
-	while (1)
-	{
-		size_t c=str.find("&lt;");
-		if (c==str.npos) break;
-		str.replace(c,4,"<");
-	}
-	while (1)
-	{
-		size_t c=str.find("&gt;");
-		if (c==str.npos) break;
-		str.replace(c,4,">");
-	}
-	while (1)
-	{
-		size_t c=str.find("&apos;");
-		if (c==str.npos) break;
-		str.replace(c,6,"'");
-	}
-	while (1)
-	{
-		size_t c=str.find("&quot;");
-		if (c==str.npos) break;
-		str.replace(c,6,"\"");
-	}
-}
-
-void GetRidOfEndChar0(std::string &str)
-{
-	while (!str.empty()&&(*str.rbegin())==0)
-		str.erase(str.end()-1);
-}
-
-void GetRidOfEndChar0(std::wstring &wstr)
-{
-	while (!wstr.empty()&&(*wstr.rbegin())==0)
-		wstr.erase(wstr.end()-1);
-}
-
-std::wstring GetRidOfEndChar0_Re(std::wstring wstr)
-{
-	while (!wstr.empty()&&(*wstr.rbegin())==0)
-		wstr.erase(wstr.end()-1);
-	return wstr;
-}
-
-std::string GetRidOfEndChar0_Re(std::string str)
-{
-	while (!str.empty()&&(*str.rbegin())==0)
-		str.erase(str.end()-1);
-	return str;
-}
-
-std::string GetSamePrefix(const std::string &str1,const std::string &str2)
-{
-	size_t pos=0;
-	while (pos<str1.length()&&pos<str2.length()&&str1[pos]==str2[pos])
-		++pos;
-	if (pos==0) return "";
-	else return str1.substr(0,pos);
-}
-
-std::string GetSubStrAfterCntChar(const std::string &str,char ch,size_t cnt=1)
-{
-	size_t pos=0,t=0;
-	while (t<cnt&&pos<str.length())
-	{
-		pos=str.find(ch,pos);
-		if (pos==str.npos)
-			break;
-		else ++pos;
-		++t;
-	}
-	if (pos!=str.npos&&pos<str.length())
-		return str.substr(pos,str.length()-pos);
-	else return "";
-}
-
-std::vector <std::string> DivideStringByLine(const std::string &str)
-{
-	using namespace std;
-	vector <string> re;
-	bool flag=0;
-	for (auto sp:str)
-	{
-		if (flag==0)
-			re.push_back(""),flag=1;
-		if (sp=='\n')
-			flag=0;
-		else if (sp!='\r')
-			re.back()+=sp;
-	}
-	return re;
-}
-
-std::vector <unsigned long long> GetULLsInStr(const std::string &str)
-{
-	std::vector <unsigned long long> re;
-	unsigned long long x=0;
-	bool flag=0;
-	for (auto sp:str)
-		if ('0'<=sp&&sp<='9')
-			if (flag) x=x*10+sp-'0';
-			else x=sp-'0',flag=1;
-		else if (flag)
-			re.push_back(x),flag=0;
-	if (flag)
-		re.push_back(x);
-	return re;
-}
-
-std::string GetFileSizeString(unsigned long long size)
-{
-	static char BKBMBGBTBPB[6][3]={"B","KB","MB","GB","TB","PB"};
-	size*=100;
-	for (int i=0;i<=5;size/=1024,++i)
-		if (size<102400)
-			return llTOstr(size/100)+"."+llTOstr(size%100,2)+" "+BKBMBGBTBPB[i];
-	return "";
-}
-
-int FileWriteString(std::ofstream &fout,const std::string &str)
-{
-	unsigned int len=str.length();
-	fout.write((char*)&len,4);
-	if (len>0)
-		fout.write(str.c_str(),len);
-	return 0;
-}
-
-std::string FileReadString(std::ifstream &fin)
-{
-	unsigned int len;
-	fin.read((char*)&len,4);
-	if (len==0) return "";
-	char *str=new char[len+1];
-	fin.read(str,len);
-	str[len]=0;
-	std::string re(str);
-	delete[] str;
-	return re;
-}
-
-bool SortComp_WithNum(const std::string &a,const std::string &b)
-{
-	size_t p=0,q=0,x,y;
-	while (p<a.length()&&q<b.length())
-	{
-		if ('0'<=a[p]&&a[p]<='9'&&'0'<=b[q]&&b[q]<='9')
-		{
-			x=y=0;
-			do x=x*10+a[p]-'0';
-			while (++p<a.length()&&'0'<=a[p]&&a[p]<='9');
-			do y=y*10+b[q]-'0';
-			while (++q<b.length()&&'0'<=b[q]&&b[q]<='9');
-			if (x!=y) return x<y;
-		}
-		else
-		{
-			char cha=a[p],chb=b[q];
-			if (cha==chb)
-				++p,++q;
-			else if (cha>0&&chb>0)
-				return Atoa(cha)<Atoa(chb);
-			else if (cha<0&&chb<0)
-				return cha>chb;
-			else return cha>0;
-		}
-	}
-	return p==a.length();
-}
-
 //Fixme:stringUTF8 need replace int or long long to size_t
 template <class T> class stringUTF8_WithData;
 
@@ -1025,4 +621,511 @@ template <class T> class stringUTF8_WithData
 		
 		stringUTF8_WithData() {}
 };
+
+int strTOint(const std::string &str)
+{
+	int x=0;
+	for (size_t i=0;i<str.length();++i)
+		x*=10,x+=str[i]-'0';
+	return x;
+}
+
+long long strTOll(const std::string &str)
+{
+	long long x=0;
+	for (size_t i=0;i<str.length();++i)
+		x*=10,x+=str[i]-'0';
+	return x;
+}
+
+double strTOdb(const std::string &str)
+{
+	double x=0;
+	for (size_t i=0,flag=0;i<str.length();++i)
+		if (str[i]=='.') flag=1;
+		else if (flag==0) x*=10,x+=str[i]-'0';
+		else x+=(double(str[i]-'0'))/(flag*=10);
+	return x;
+}
+
+std::string llTOstr(long long x,unsigned int w=1)
+{
+//	if (x==0) return "0";
+	std::string re;
+	if (x<0) re+="-",x=-x;
+	std::stack <char> sta;
+	while (x)
+		sta.push(x%10+'0'),x/=10;
+	if (w!=0)
+		while (sta.size()<w)
+			sta.push('0');
+	while (!sta.empty())
+		re+=sta.top(),sta.pop();
+	return re;
+}
+
+std::string ullTOstr(unsigned long long x,unsigned int w=1)
+{
+	std::string re;
+	std::stack <char> sta;
+	while (x)
+		sta.push(x%10+'0'),x/=10;
+	if (w!=0)
+		while (sta.size()<w)
+			sta.push('0');
+	while (!sta.empty())
+		re+=sta.top(),sta.pop();
+	return re;
+}
+
+bool strISll(const std::string &str)
+{
+	size_t p=0;
+	if (str[0]=='-')
+		++p;
+	while (p<str.length())
+		if (str[p]<'0'||str[p]>'9')
+			return 0;
+		else ++p;
+	return 1;
+}
+
+bool strISull(const std::string &str)
+{
+	for (auto sp:str)
+		if (sp<'0'||sp>'9')
+			return 0;
+	return 1;
+}
+
+std::string ullTOpadic(unsigned long long x,bool isA=1,unsigned char p=16,unsigned int w=0)
+{
+	std::string re;
+	std::stack <char> sta;
+	while (x)
+		sta.push(x%p),x/=p;
+	if (w!=0)
+		while (sta.size()<w)
+			sta.push('0');
+	while (!sta.empty())
+	{
+		unsigned char y=sta.top();
+		sta.pop();
+		if (0<=y&&y<=9)
+			re+=y+'0';
+		else if (isA)
+			re+=y-10+'A';
+		else re+=y-10+'a';
+	}
+	return re;
+}
+
+unsigned long long padicTOull(const std::string &str,unsigned char p=16)
+{
+	unsigned long long re=0;
+	for (auto sp:str)
+		if ('0'<=sp&&sp<='9')
+			re=re*p+sp-'0';
+		else if ('a'<=sp&&sp<='z')
+			re=re*p+sp-'a'+10;
+		else if ('A'<=sp&&sp<='Z')
+			re=re*p+sp-'A'+10;
+	return re;
+}
+
+std::string ReplaceCharInStr(std::string str,const size_t &L,const size_t &R,const char &ch1,const char &ch2)
+{
+	for (size_t i=L;i<=R;++i)
+		if (str[i]==ch1)
+			str[i]=ch2;
+	return str;
+}
+
+std::string ReplaceCharInStr(const std::string &str,const char &ch1,const char &ch2)
+{
+	if (str.empty()) return "";
+	return ReplaceCharInStr(str,0,str.length()-1,ch1,ch2);
+}
+
+std::string DeletePreBlank(const std::string &str)
+{
+	for (size_t i=0;i<str.length();++i)
+		switch (str[i])
+		{
+			case '\n':break;//??
+			case '\r':break;//??
+			case '\t':break;
+			case ' ' :break;
+			case '\0':break;
+			default:
+				return str.substr(i,str.length()-i);
+		}
+	return "";
+}
+
+std::string DeleteEndBlank(const std::string &str)
+{
+	if (str.empty()) return "";
+	for (size_t i=str.length()-1;i>=0;--i)
+		switch (str[i])
+		{
+			case '\n':break;//??
+			case '\r':break;//??
+			case '\t':break;
+			case ' ' :break;
+			case '\0':break;
+			default:
+				return str.substr(0,i+1);
+		}
+	return "";
+}
+
+std::wstring DeleteEndBlank(const std::wstring &wstr)
+{
+	if (wstr.empty()) return L"";
+	for (size_t i=wstr.length()-1;i>=0;--i)
+		switch (wstr[i])
+		{
+			case L'\n':break;//??
+			case L'\r':break;//??
+			case L'\t':break;
+			case L' ' :break;
+			case L'\0':break;
+			default:
+				return wstr.substr(0,i+1);
+		}
+	return L"";
+}
+
+std::string DeleteSideBlank(const std::string &str)
+{
+	if (str.empty()) return "";
+	size_t l=0,r=str.length()-1;
+	bool flag=1;
+	while (flag&&l<str.length())
+		switch (str[l])
+		{
+			case '\n':	case '\r':	case '\t':	case ' ':	case '\0':
+				++l;
+				break;
+			default:
+				flag=0;
+		}
+	flag=1;
+	while (flag&&r>=l)
+		switch (str[r])
+		{
+			case '\n':	case '\r':	case '\t':	case ' ':	case '\0':
+				--r;
+				break;
+			default:
+				flag=0;
+		}
+	if (l<=r) return str.substr(l,r-l+1);
+	else return "";
+}
+
+std::string CutFirstCharInvolveSubStr(const std::string &str,const char &ch)
+{
+	size_t pos1=0,pos2=0;
+	pos1=str.find(ch);
+	if (pos1+1<str.length())
+		pos2=str.find(pos1+1,ch);
+	if (pos1<pos2&&pos1!=str.npos&&pos2!=str.npos) return str.substr(pos1+1,pos2-pos1-1);
+	else return "";
+}
+
+std::string CutFirstSubStringBetweenChar(const std::string &str,char chL,char chR)//chL,chR !=0
+{
+	std::string re;
+	for (auto sp:str)
+		if (chL!=0)
+			sp==chL?chL=0:0;
+		else if (sp==chR)
+			return re;
+		else re+=sp;
+	return "";
+}
+
+std::string GetAftername(const std::string &str)
+{
+	if (str.empty()) return "";
+	size_t p=str.rfind(".",str.length()-1);
+	if (p==str.npos) return "";
+	return str.substr(p,str.length()-p);
+}
+
+std::string GetWithOutAftername(const std::string &str)
+{
+	if (str.empty()) return "";
+	size_t p=str.rfind(".",str.length()-1);
+	if (p==str.npos) return str;
+	return str.substr(0,p);
+}
+
+std::string GetLastAfterBackSlash(const std::string &str)
+{
+	if (str.empty()) return "";
+	size_t p=str.rfind("\\",str.length()-1);
+	if (p==str.npos||p==str.length()-1) return "";
+	return str.substr(p+1,str.length()-p-1);
+}
+
+std::string GetPreviousBeforeBackSlash(const std::string &str)
+{
+	if (str.empty()) return "";
+	size_t p=str.rfind("\\",str.length()-1);
+	if (p==str.npos||p==0) return "";
+	return str.substr(0,p);
+}
+
+std::string Atoa(std::string str)
+{
+	for (size_t i=0;i<str.length();++i)
+		if ('A'<=str[i]&&str[i]<='Z')
+			str[i]+='a'-'A';
+	return str;
+}
+
+char Atoa(char ch)
+{
+	if ('A'<=ch&&ch<='Z')
+		return ch-'A'+'a';
+	else return ch;
+}
+
+std::string atoA(std::string str)
+{
+	for (size_t i=0;i<str.length();++i)	
+		if ('a'<=str[i]&&str[i]<='z')
+			str[i]+='A'-'a';
+	return str;
+}
+
+std::string GetRandStr(int w,const std::vector <char> &charset)
+{
+	std::string re;
+	for (int i=1;i<=w;++i)
+		re+=charset[rand()%charset.size()];
+	return re;
+}
+
+void ReplaceXMLescapecharWithReal(std::string &str)
+{
+	while (1)
+	{
+		size_t c=str.find("&amp;");
+		if (c==str.npos) break;
+		str.replace(c,5,"&");
+	}
+	while (1)
+	{
+		size_t c=str.find("&lt;");
+		if (c==str.npos) break;
+		str.replace(c,4,"<");
+	}
+	while (1)
+	{
+		size_t c=str.find("&gt;");
+		if (c==str.npos) break;
+		str.replace(c,4,">");
+	}
+	while (1)
+	{
+		size_t c=str.find("&apos;");
+		if (c==str.npos) break;
+		str.replace(c,6,"'");
+	}
+	while (1)
+	{
+		size_t c=str.find("&quot;");
+		if (c==str.npos) break;
+		str.replace(c,6,"\"");
+	}
+}
+
+void GetRidOfEndChar0(std::string &str)
+{
+	while (!str.empty()&&(*str.rbegin())==0)
+		str.erase(str.end()-1);
+}
+
+void GetRidOfEndChar0(std::wstring &wstr)
+{
+	while (!wstr.empty()&&(*wstr.rbegin())==0)
+		wstr.erase(wstr.end()-1);
+}
+
+std::wstring GetRidOfEndChar0_Re(std::wstring wstr)
+{
+	while (!wstr.empty()&&(*wstr.rbegin())==0)
+		wstr.erase(wstr.end()-1);
+	return wstr;
+}
+
+std::string GetRidOfEndChar0_Re(std::string str)
+{
+	while (!str.empty()&&(*str.rbegin())==0)
+		str.erase(str.end()-1);
+	return str;
+}
+
+std::string GetSamePrefix(const std::string &str1,const std::string &str2)
+{
+	size_t pos=0;
+	while (pos<str1.length()&&pos<str2.length()&&str1[pos]==str2[pos])
+		++pos;
+	if (pos==0) return "";
+	else return str1.substr(0,pos);
+}
+
+std::string GetSubStrAfterCntChar(const std::string &str,char ch,size_t cnt=1)
+{
+	size_t pos=0,t=0;
+	while (t<cnt&&pos<str.length())
+	{
+		pos=str.find(ch,pos);
+		if (pos==str.npos)
+			break;
+		else ++pos;
+		++t;
+	}
+	if (pos!=str.npos&&pos<str.length())
+		return str.substr(pos,str.length()-pos);
+	else return "";
+}
+
+std::vector <std::string> DivideStringByLine(const std::string &str)
+{
+	using namespace std;
+	vector <string> re;
+	bool flag=0;
+	for (auto sp:str)
+	{
+		if (flag==0)
+			re.push_back(""),flag=1;
+		if (sp=='\n')
+			flag=0;
+		else if (sp!='\r')
+			re.back()+=sp;
+	}
+	return re;
+}
+
+std::vector <std::string> DivideStringByChar(const std::string &str,char ch)
+{
+	using namespace std;
+	vector <string> re;
+	bool flag=0;
+	for (auto sp:str)
+	{
+		if (flag==0)
+			re.push_back(""),flag=1;
+		if (sp==ch)
+			flag=0;
+		else re.back()+=sp;
+	}
+	return re;
+}
+
+std::vector <unsigned long long> GetULLsInStr(const std::string &str)
+{
+	std::vector <unsigned long long> re;
+	unsigned long long x=0;
+	bool flag=0;
+	for (auto sp:str)
+		if ('0'<=sp&&sp<='9')
+			if (flag) x=x*10+sp-'0';
+			else x=sp-'0',flag=1;
+		else if (flag)
+			re.push_back(x),flag=0;
+	if (flag)
+		re.push_back(x);
+	return re;
+}
+
+template <typename T> unsigned long long StrEditDistanceT(const T &a,const T &b,int modify=1,int erase=1,int add=1)
+{
+	int h=a.length()+1,w=b.length()+1;
+	std::vector <unsigned long long> opt(h*w,0x3fffffffffffffffll);
+	opt[0]=0;
+	for (size_t i=1;i<=a.length();++i)
+		opt[i*w]=i;
+	for (size_t i=1;i<=b.length();++i)
+		opt[i]=i;
+	
+	for (size_t i=1;i<=a.length();++i)
+		for (size_t j=1;j<=b.length();++j)
+			if (a[i-1]==b[j-1]) opt[i*w+j]=opt[(i-1)*w+j-1];
+			else opt[i*w+j]=std::min(opt[(i-1)*w+j-1]+modify,std::min(opt[i*w+j-1]+erase,opt[(i-1)*w+j]+add));
+	return opt[h*w-1];
+}
+
+inline unsigned long long StrEditDistance(const std::string &a,const std::string &b,int modify=1,int erase=1,int add=1)
+{return StrEditDistanceT(a,b,modify,erase,add);}
+
+inline unsigned long long StrEditDistanceUTF8(const stringUTF8 &a,const stringUTF8 &b,int modify=1,int erase=1,int add=1)
+{return StrEditDistanceT(a,b,modify,erase,add);}
+
+std::string GetFileSizeString(unsigned long long size)
+{
+	static char BKBMBGBTBPB[6][3]={"B","KB","MB","GB","TB","PB"};
+	size*=100;
+	for (int i=0;i<=5;size/=1024,++i)
+		if (size<102400)
+			return llTOstr(size/100)+"."+llTOstr(size%100,2)+" "+BKBMBGBTBPB[i];
+	return "";
+}
+
+int FileWriteString(std::ofstream &fout,const std::string &str)
+{
+	unsigned int len=str.length();
+	fout.write((char*)&len,4);
+	if (len>0)
+		fout.write(str.c_str(),len);
+	return 0;
+}
+
+std::string FileReadString(std::ifstream &fin)
+{
+	unsigned int len;
+	fin.read((char*)&len,4);
+	if (len==0) return "";
+	char *str=new char[len+1];
+	fin.read(str,len);
+	str[len]=0;
+	std::string re(str);
+	delete[] str;
+	return re;
+}
+
+bool SortComp_WithNum(const std::string &a,const std::string &b)
+{
+	size_t p=0,q=0,x,y;
+	while (p<a.length()&&q<b.length())
+	{
+		if ('0'<=a[p]&&a[p]<='9'&&'0'<=b[q]&&b[q]<='9')
+		{
+			x=y=0;
+			do x=x*10+a[p]-'0';
+			while (++p<a.length()&&'0'<=a[p]&&a[p]<='9');
+			do y=y*10+b[q]-'0';
+			while (++q<b.length()&&'0'<=b[q]&&b[q]<='9');
+			if (x!=y) return x<y;
+		}
+		else
+		{
+			char cha=a[p],chb=b[q];
+			if (cha==chb)
+				++p,++q;
+			else if (cha>0&&chb>0)
+				return Atoa(cha)<Atoa(chb);
+			else if (cha<0&&chb<0)
+				return cha>chb;
+			else return cha>0;
+		}
+	}
+	return p==a.length();
+}
+
 #endif

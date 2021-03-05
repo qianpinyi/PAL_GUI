@@ -5,10 +5,305 @@
 [PUI_Info] Create Button 10003
 [PUI_Info] Window 1 shown
 [PUI_Info] Window 1 gained keyboard focus
+[PUI_Info] Mouse entered window 1
 [PUI_Info] Window 1 exposed
-[PUI_Info] PAL_GUI_Quit
-[PUI_Info] Delete window PAL_GUI Test
-[PUI_Info] Delete Widgets 10001
-[PUI_Info] Delete Widgets 10003
-[PUI_Info] Delete Widgets 10002
-[PUI_Info] PAL_GUI_Quit OK
+[PUI_Info] Button 10003 click
+[PUI_Info] Button 10003 function
+[PUI_Info] Create window NewWindow
+[PUI_Info] Create Layer 10004
+[PUI_Info] Create Layer 10005
+[PUI_Info] Window 2 shown
+[PUI_Info] Window 1 lost keyboard focus
+[PUI_Info] Window 2 gained keyboard focus
+[PUI_Info] Window 2 lost keyboard focus
+[PUI_Info] Window 1 gained keyboard focus
+[PUI_Info] Button 10003 click
+[PUI_Info] Window 1 exposed
+[PUI_Info] Window 2 exposed
+[PUI_Info] Button 10003 function
+[PUI_Info] Delete window NewWindow
+[PUI_Info] Delete Widgets 10004
+[PUI_Info] Delete Widgets 10005
+[PUI_Info] Window 2 hidden
+[PUI_Info] Button 10003 click
+[PUI_Info] Button 10003 function
+[PUI_Info] Create window NewWindow
+[PUI_Info] Create Layer 10006
+[PUI_Info] Create Layer 10007
+[PUI_Info] Window 3 shown
+[PUI_Info] Window 1 lost keyboard focus
+[PUI_Info] Window 3 gained keyboard focus
+[PUI_Info] Window 3 exposed
+[PUI_Info] Window 3 lost keyboard focus
+[PUI_Info] Window 1 gained keyboard focus
+[PUI_Info] Button 10003 click
+[PUI_Info] Window 1 exposed
+[PUI_Info] Button 10003 function
+[PUI_Info] Delete window NewWindow
+[PUI_Info] Delete Widgets 10006
+[PUI_Info] Delete Widgets 10007
+[PUI_Info] Window 3 hidden
+[PUI_Info] Button 10003 click
+[PUI_Info] Button 10003 function
+[PUI_Info] Create window NewWindow
+[PUI_Info] Create Layer 10008
+[PUI_Info] Create Layer 10009
+[PUI_Info] Window 4 shown
+[PUI_Info] Window 1 lost keyboard focus
+[PUI_Info] Window 4 gained keyboard focus
+[PUI_Info] Window 4 exposed
+[PUI_Info] Window 4 lost keyboard focus
+[PUI_Info] Window 1 gained keyboard focus
+[PUI_Info] Button 10003 click
+[PUI_Info] Window 1 exposed
+[PUI_Info] Button 10003 function
+[PUI_Info] Delete window NewWindow
+[PUI_Info] Delete Widgets 10008
+[PUI_Info] Delete Widgets 10009
+[PUI_Info] Window 4 hidden
+[PUI_Info] Button 10003 click
+[PUI_Info] Button 10003 function
+[PUI_Info] Create window NewWindow
+[PUI_Info] Create Layer 10010
+[PUI_Info] Create Layer 10011
+[PUI_Info] Window 5 shown
+[PUI_Info] Window 1 lost keyboard focus
+[PUI_Info] Window 5 gained keyboard focus
+[PUI_Info] Window 5 exposed
+[PUI_Info] Window 5 lost keyboard focus
+[PUI_Info] Window 1 gained keyboard focus
+[PUI_Info] Button 10003 click
+[PUI_Info] Window 1 exposed
+[PUI_Info] Button 10003 function
+[PUI_Info] Delete window NewWindow
+[PUI_Info] Delete Widgets 10010
+[PUI_Info] Delete Widgets 10011
+[PUI_Info] Window 5 hidden
+[PUI_Info] Button 10003 click
+[PUI_Info] Button 10003 function
+[PUI_Info] Create window NewWindow
+[PUI_Info] Create Layer 10012
+[PUI_Info] Create Layer 10013
+[PUI_Info] Window 6 shown
+[PUI_Info] Window 1 lost keyboard focus
+[PUI_Info] Window 6 gained keyboard focus
+[PUI_Info] Window 6 exposed
+[PUI_Info] Window 6 lost keyboard focus
+[PUI_Info] Window 1 gained keyboard focus
+[PUI_Info] Button 10003 click
+[PUI_Info] Window 1 exposed
+[PUI_Info] Button 10003 function
+[PUI_Info] Delete window NewWindow
+[PUI_Info] Delete Widgets 10012
+[PUI_Info] Delete Widgets 10013
+[PUI_Info] Window 6 hidden
+[PUI_Info] Button 10003 click
+[PUI_Info] Button 10003 function
+[PUI_Info] Create window NewWindow
+[PUI_Info] Create Layer 10014
+[PUI_Info] Create Layer 10015
+[PUI_Info] Window 7 shown
+[PUI_Info] Window 1 lost keyboard focus
+[PUI_Info] Window 7 gained keyboard focus
+[PUI_Info] Window 7 exposed
+[PUI_Info] Window 7 lost keyboard focus
+[PUI_Info] Window 1 gained keyboard focus
+[PUI_Info] Button 10003 click
+[PUI_Info] Window 1 exposed
+[PUI_Info] Button 10003 function
+[PUI_Info] Delete window NewWindow
+[PUI_Info] Delete Widgets 10014
+[PUI_Info] Delete Widgets 10015
+[PUI_Info] Window 7 hidden
+[PUI_Info] Button 10003 click
+[PUI_Info] Button 10003 function
+[PUI_Info] Create window NewWindow
+[PUI_Info] Create Layer 10016
+[PUI_Info] Create Layer 10017
+[PUI_Info] Window 8 shown
+[PUI_Info] Window 1 lost keyboard focus
+[PUI_Info] Window 8 gained keyboard focus
+[PUI_Info] Window 8 exposed
+[PUI_Info] Window 8 lost keyboard focus
+[PUI_Info] Window 1 gained keyboard focus
+[PUI_Info] Button 10003 click
+[PUI_Info] Window 1 exposed
+[PUI_Info] Button 10003 function
+[PUI_Info] Delete window NewWindow
+[PUI_Info] Delete Widgets 10016
+[PUI_Info] Delete Widgets 10017
+[PUI_Info] Window 8 hidden
+[PUI_Info] Button 10003 click
+[PUI_Info] Button 10003 function
+[PUI_Info] Create window NewWindow
+[PUI_Info] Create Layer 10018
+[PUI_Info] Create Layer 10019
+[PUI_Info] Window 9 shown
+[PUI_Info] Window 1 lost keyboard focus
+[PUI_Info] Window 9 gained keyboard focus
+[PUI_Info] Window 9 exposed
+[PUI_Info] Window 9 lost keyboard focus
+[PUI_Info] Window 1 gained keyboard focus
+[PUI_Info] Button 10003 click
+[PUI_Info] Window 1 exposed
+[PUI_Info] Button 10003 function
+[PUI_Info] Delete window NewWindow
+[PUI_Info] Delete Widgets 10018
+[PUI_Info] Delete Widgets 10019
+[PUI_Info] Window 9 hidden
+[PUI_Info] Button 10003 click
+[PUI_Info] Button 10003 function
+[PUI_Info] Create window NewWindow
+[PUI_Info] Create Layer 10020
+[PUI_Info] Create Layer 10021
+[PUI_Info] Window 10 shown
+[PUI_Info] Window 1 lost keyboard focus
+[PUI_Info] Window 10 gained keyboard focus
+[PUI_Info] Window 10 exposed
+[PUI_Info] Mouse left window PAL_GUI Test
+[PUI_Info] Mouse entered window 10
+[PUI_Info] Mouse left window NewWindow
+[PUI_Info] Window 10 lost keyboard focus
+[PUI_Info] Mouse entered window 10
+[PUI_Info] Mouse left window NewWindow
+[PUI_Info] Window 10 gained keyboard focus
+[PUI_Info] Window 10 closed
+[PUI_Info] Window 10 exposed
+[PUI_Info] Mouse entered window 10
+[PUI_Info] Mouse left window NewWindow
+[PUI_Info] Window NewWindow moved to 1084,546
+[PUI_Info] Window 10 exposed
+[PUI_Info] Mouse entered window 10
+[PUI_Info] Mouse left window NewWindow
+[PUI_Info] Window 10 lost keyboard focus
+[PUI_Info] Window 10 gained keyboard focus
+[PUI_Info] Mouse entered window 10
+[PUI_Info] Window 10 exposed
+[PUI_Info] Mouse left window NewWindow
+[PUI_Info] Mouse entered window 10
+[PUI_Info] Mouse left window NewWindow
+[PUI_Info] Mouse entered window 10
+[PUI_Info] Mouse left window NewWindow
+[PUI_Info] Window 10 lost keyboard focus
+[PUI_Info] Window 10 gained keyboard focus
+[PUI_Info] Mouse entered window 10
+[PUI_Info] Mouse left window NewWindow
+[PUI_Info] Window 10 lost keyboard focus
+[PUI_Info] Mouse entered window 1
+[PUI_Info] Window 1 gained keyboard focus
+[PUI_Info] Window 1 exposed
+[PUI_Info] Mouse left window PAL_GUI Test
+[PUI_Info] Mouse entered window 10
+[PUI_Info] Window 1 lost keyboard focus
+[PUI_Info] Window 10 gained keyboard focus
+[PUI_Info] Window 10 exposed
+[PUI_Info] Mouse left window NewWindow
+[PUI_Info] Mouse entered window 1
+[PUI_Info] Mouse left window PAL_GUI Test
+[PUI_Info] Mouse entered window 10
+[PUI_Info] Mouse left window NewWindow
+[PUI_Info] Window NewWindow moved to 1313,505
+[PUI_Info] Window 10 exposed
+[PUI_Info] Mouse entered window 10
+[PUI_Info] Mouse left window NewWindow
+[PUI_Info] Mouse entered window 1
+[PUI_Info] Window 10 lost keyboard focus
+[PUI_Info] Window 1 gained keyboard focus
+[PUI_Info] Window 1 exposed
+[PUI_Info] Mouse left window PAL_GUI Test
+[PUI_Info] Mouse entered window 10
+[PUI_Info] Window 1 lost keyboard focus
+[PUI_Info] Window 10 gained keyboard focus
+[PUI_Info] Window 10 exposed
+[PUI_Info] Mouse left window NewWindow
+[PUI_Info] Mouse entered window 1
+[PUI_Info] Window 10 lost keyboard focus
+[PUI_Info] Window 1 gained keyboard focus
+[PUI_Info] Window 1 exposed
+[PUI_Info] Mouse left window PAL_GUI Test
+[PUI_Info] Mouse entered window 10
+[PUI_Info] Window 1 lost keyboard focus
+[PUI_Info] Window 10 gained keyboard focus
+[PUI_Info] Window 10 exposed
+[PUI_Info] Mouse left window NewWindow
+[PUI_Info] Mouse entered window 1
+[PUI_Info] Window 10 lost keyboard focus
+[PUI_Info] Window 1 gained keyboard focus
+[PUI_Info] Window 1 exposed
+[PUI_Info] Mouse left window PAL_GUI Test
+[PUI_Info] Mouse entered window 10
+[PUI_Info] Mouse left window NewWindow
+[PUI_Info] Mouse entered window 1
+[PUI_Info] Mouse left window PAL_GUI Test
+[PUI_Info] Mouse entered window 10
+[PUI_Info] Window 1 lost keyboard focus
+[PUI_Info] Window 10 gained keyboard focus
+[PUI_Info] Window 10 exposed
+[PUI_Info] Mouse left window NewWindow
+[PUI_Info] Mouse entered window 1
+[PUI_Info] Window 10 lost keyboard focus
+[PUI_Info] Window 1 gained keyboard focus
+[PUI_Info] Window 1 exposed
+[PUI_Info] Mouse left window PAL_GUI Test
+[PUI_Info] Mouse entered window 10
+[PUI_Info] Window 1 lost keyboard focus
+[PUI_Info] Window 10 gained keyboard focus
+[PUI_Info] Window 10 exposed
+[PUI_Info] Mouse left window NewWindow
+[PUI_Info] Mouse entered window 1
+[PUI_Info] Window 10 lost keyboard focus
+[PUI_Info] Window 1 gained keyboard focus
+[PUI_Info] Window 1 exposed
+[PUI_Info] Mouse left window PAL_GUI Test
+[PUI_Info] Mouse entered window 10
+[PUI_Info] Window 1 lost keyboard focus
+[PUI_Info] Window 10 gained keyboard focus
+[PUI_Info] Window 10 exposed
+[PUI_Info] Mouse left window NewWindow
+[PUI_Info] Mouse entered window 1
+[PUI_Info] Window 10 lost keyboard focus
+[PUI_Info] Window 1 gained keyboard focus
+[PUI_Info] Window 1 exposed
+[PUI_Info] Mouse left window PAL_GUI Test
+[PUI_Info] Mouse entered window 10
+[PUI_Info] Window 1 lost keyboard focus
+[PUI_Info] Window 10 gained keyboard focus
+[PUI_Info] Window 10 exposed
+[PUI_Info] Mouse left window NewWindow
+[PUI_Info] Mouse entered window 1
+[PUI_Info] Window 10 lost keyboard focus
+[PUI_Info] Window 1 gained keyboard focus
+[PUI_Info] Window 1 exposed
+[PUI_Info] Mouse left window PAL_GUI Test
+[PUI_Info] Mouse entered window 10
+[PUI_Info] Window 1 lost keyboard focus
+[PUI_Info] Window 10 gained keyboard focus
+[PUI_Info] Window 10 exposed
+[PUI_Info] Mouse left window NewWindow
+[PUI_Info] Mouse entered window 1
+[PUI_Info] Window 10 lost keyboard focus
+[PUI_Info] Window 1 gained keyboard focus
+[PUI_Info] Window 1 exposed
+[PUI_Info] Mouse left window PAL_GUI Test
+[PUI_Info] Mouse entered window 10
+[PUI_Info] Window 1 lost keyboard focus
+[PUI_Info] Window 10 gained keyboard focus
+[PUI_Info] Window 10 exposed
+[PUI_Info] Mouse left window NewWindow
+[PUI_Info] Mouse entered window 1
+[PUI_Info] Window 10 lost keyboard focus
+[PUI_Info] Window 1 gained keyboard focus
+[PUI_Info] Window 1 exposed
+[PUI_Info] Mouse left window PAL_GUI Test
+[PUI_Info] Mouse entered window 10
+[PUI_Info] Window 1 lost keyboard focus
+[PUI_Info] Window 10 gained keyboard focus
+[PUI_Info] Window 10 exposed
+[PUI_Info] Mouse left window NewWindow
+[PUI_Info] Mouse entered window 1
+[PUI_Info] Window 10 lost keyboard focus
+[PUI_Info] Window 1 gained keyboard focus
+[PUI_Info] Window 1 exposed
+[PUI_Info] Mouse left window PAL_GUI Test
+[PUI_Info] Window 1 lost keyboard focus
+[PUI_Info] Mouse entered window 1
